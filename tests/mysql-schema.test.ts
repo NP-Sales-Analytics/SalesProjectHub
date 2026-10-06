@@ -7,7 +7,7 @@ import * as schema from '@/lib/db/schema';
 // (npm run db:migrate). Tanpa env ini test dilewati.
 const url = process.env.TEST_DATABASE_URL;
 
-const tabelDrizzle = Object.values(schema)
+const tabelDrizzle = (Object.values(schema) as unknown[])
   .filter((v): v is MySqlTable => v instanceof MySqlTable)
   .map((t) => getTableConfig(t));
 

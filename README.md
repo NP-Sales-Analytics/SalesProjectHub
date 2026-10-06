@@ -21,6 +21,10 @@ npm run dev                  # http://localhost:3000
 jadi **backup dulu** sebelum menjalankannya di production, dan gunakan akun ber-hak DDL yang
 terpisah dari akun runtime aplikasi.
 
+Akun pertama: isi `BOOTSTRAP_ADMIN_*` lalu `npm run bootstrap:admin`. Untuk pengembangan,
+`npm run seed:dev` mengisi data contoh (menolak berjalan di database yang namanya tidak
+mengandung `dev`/`test`; semua email contoh memakai `@example.com`).
+
 ## Perintah
 | Perintah | Fungsi |
 |---|---|
@@ -28,6 +32,31 @@ terpisah dari akun runtime aplikasi.
 | `npm run lint` | ESLint |
 | `npm test` | Vitest. Test database berjalan bila `TEST_DATABASE_URL` diset (database yang sudah dimigrasi). |
 | `npm run db:migrate` | Terapkan migrasi SQL yang belum tercatat di `schema_migrations` |
+| `npm run bootstrap:admin` | Buat / pulihkan Super Admin dari env `BOOTSTRAP_ADMIN_*` |
+| `npm run seed:dev` | Data contoh untuk database dev/test |
+
+## Role dan akses
+| Role | Halaman bawaan | Data penawaran yang terlihat |
+|---|---|---|
+| Super Admin | Semua + User Management + Area Management | Semua |
+| Admin | Semua + Area Management | Area ∈ akses area **dan** organisasi ∈ akses organisasi |
+| Manager | Semua | Sama dengan Admin |
+| Manager Admin (legacy) | Semua kecuali halaman approval | Sama dengan Admin |
+| Sales | Semua kecuali halaman approval | Hanya pasangan (organisasi, nama sales) miliknya di master Sales |
+
+- **Akses default:** user tanpa setelan tersimpan mendapat akses default role.
+  - Manager: area yang kolom email approval-nya memuat emailnya, dan organisasi yang manager-nya dia.
+  - Admin: semua.
+  - Sales: organisasi dari master Sales.
+- **Akses kustom:** menyimpan user di User Management menjadikan aksesnya persis seperti yang dipilih.
+- **Penegakan:** semua aturan diperiksa di server — halaman lewat `requireHalaman`, aksi lewat `wajibRole` / `wajibHalaman`, data lewat `lib/cakupan.ts`.
+- **Kecepatan berlaku:** penonaktifan akun atau perubahan role berlaku paling lambat 15 detik.
+
+## Pekerjaan latar (PDF & email)
+Pekerjaan lambat masuk tabel `jobs`:
+- **Pemrosesan:** langsung setelah respons dikirim (`after()`), lalu disapu `GET /api/cron/jobs` dengan header `Authorization: Bearer $CRON_SECRET`.
+- **Retry:** maksimal 3 percobaan. Job baru dianggap selesai bila benar-benar berhasil.
+- **Password di payload:** password awal di email akun baru disimpan terenkripsi, dan dihapus dari payload setelah email terkirim.
 
 ## Environment variables
 Lihat [`.env.example`](.env.example). **Repo ini publik** — jangan pernah commit `.env*`,

@@ -4,7 +4,8 @@ import { SESSION_COOKIE } from '@/lib/session-cookie';
 
 const MAX_AGE_S = 12 * 3600;
 
-export type Session = { kind: 'team'; id: string };
+/** `exp` ikut dikembalikan: dipakai lib/auth sebagai bagian kunci cache user per sesi. */
+export type Session = { kind: 'team'; id: string; exp: number };
 
 function secret() {
   const value = process.env.AUTH_SECRET;
@@ -32,7 +33,7 @@ export function verifySession(token: string, now = Date.now()): Session | null {
   const [kind, id, expiryText] = Buffer.from(body, 'base64url').toString().split(':');
   const expiry = Number(expiryText);
   if (kind !== 'team' || !id || !Number.isFinite(expiry) || expiry < now) return null;
-  return { kind: 'team', id };
+  return { kind: 'team', id, exp: expiry };
 }
 
 export async function setSessionCookie(id: string) {

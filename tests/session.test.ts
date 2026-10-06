@@ -10,7 +10,7 @@ describe('signed session', () => {
   const id = '11111111-1111-1111-1111-111111111111';
 
   it('round-trips team + id', () => {
-    expect(verifySession(signSession('team', id))).toEqual({ kind: 'team', id });
+    expect(verifySession(signSession('team', id))).toMatchObject({ kind: 'team', id });
   });
 
   it('rejects the removed customer session kind', () => {

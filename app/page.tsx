@@ -1,13 +1,11 @@
-import { Brand } from '@/components/shared/brand';
+import { redirect } from 'next/navigation';
+import { getSessionUser, halamanAwal } from '@/lib/auth';
 
-// Sementara (tahap scaffold): diganti redirect per role setelah auth ada (tahap 3).
-export default function Home() {
-  return (
-    <main className="grid min-h-dvh place-items-center bg-background p-6">
-      <div className="space-y-3 text-center">
-        <Brand size="lg" className="justify-center" />
-        <p className="text-sm text-muted-foreground">Sales Hub versi Next.js sedang dalam migrasi.</p>
-      </div>
-    </main>
-  );
+export const dynamic = 'force-dynamic';
+
+export default async function Home() {
+  const user = await getSessionUser();
+  if (!user) redirect('/login');
+  if (user.wajibGantiPassword) redirect('/ganti-password');
+  redirect(halamanAwal(user));
 }
