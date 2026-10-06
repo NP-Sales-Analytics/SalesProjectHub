@@ -1,2 +1,13 @@
-// Diisi di tahap 2 (skema MySQL). Satu file per tabel, di-export ulang dari sini.
-export {};
+export * from './app-config';
+export * from './area';
+export * from './audit-log';
+export * from './jobs';
+export * from './kam';
+export * from './material-estimator';
+export * from './nomor';
+export * from './organisasi';
+export * from './penawaran';
+export * from './produk';
+export * from './project-estimator';
+export * from './sales';
+export * from './users';
