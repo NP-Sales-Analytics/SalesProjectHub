@@ -1,0 +1,37 @@
+# dependencies
+/node_modules
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+/build
+next-env.d.ts
+*.tsbuildinfo
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+
+# env & rahasia (repo publik — jangan pernah di-commit)
+.env*
+!.env.example
+.superadmin-credentials.txt
+*service-account*.json
+
+# ekspor data migrasi & hasil cek berisi data asli
+/data/
+/migrasi-data/
+/screenshots/
+cookies*.txt
+
+# vercel
+.vercel
+
+# claude code local settings
+.claude/settings.local.json
