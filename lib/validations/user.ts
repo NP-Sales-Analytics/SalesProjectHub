@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ROLE_FORM, SEMUA_HREF } from '@/lib/access';
-import { PASSWORD_MIN } from '@/lib/password-aturan';
+import { PASSWORD_MIN_AWAL } from '@/lib/password-aturan';
 
 const daftar = z.array(z.string().trim()).default([]);
 
@@ -24,7 +24,7 @@ export function rapikanUser(raw: unknown, opsi: { baru: boolean; validArea: stri
   const p = userInputSchema.parse(raw);
   const role = p.role as (typeof ROLE_FORM)[number];
   if (opsi.baru && !p.password) throw new Error('Password wajib diisi.');
-  if (p.password && p.password.length < PASSWORD_MIN) throw new Error(`Password minimal ${PASSWORD_MIN} karakter.`);
+  if (p.password && p.password.length < PASSWORD_MIN_AWAL) throw new Error(`Password minimal ${PASSWORD_MIN_AWAL} karakter.`);
 
   const saring = (pilihan: string[], valid: string[]) => {
     const peta = new Map(valid.map((v) => [v.toLowerCase(), v]));

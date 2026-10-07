@@ -123,7 +123,8 @@ export async function buatUser(aktor: SessionUser, raw: unknown) {
   const jobId = await db.transaction(async (tx) => {
     await tx.insert(users).values({
       id, username, namaLengkap: d.namaLengkap, email: d.email, role: d.role,
-      passwordHash: await hashPassword(d.password), isActive: d.isActive, aksesKustom: true,
+      // Password awal dari Admin → user wajib menggantinya saat login pertama.
+      passwordHash: await hashPassword(d.password), wajibGantiPassword: true, isActive: d.isActive, aksesKustom: true,
     });
     await simpanAkses(tx, id, d, master);
     if (d.role === 'sales') await sinkronSales(tx, d, null, master);
@@ -154,7 +155,8 @@ export async function ubahUser(aktor: SessionUser, id: string, raw: unknown) {
   await db.transaction(async (tx) => {
     await tx.update(users).set({
       username, namaLengkap: d.namaLengkap, email: d.email, role: d.role, isActive: d.isActive, aksesKustom: true,
-      ...(d.password ? { passwordHash: await hashPassword(d.password), wajibGantiPassword: false } : {}),
+      // Reset password oleh Admin → user wajib mengganti lagi saat login berikutnya.
+      ...(d.password ? { passwordHash: await hashPassword(d.password), wajibGantiPassword: true } : {}),
     }).where(eq(users.id, id));
     await simpanAkses(tx, id, d, master);
     if (d.role === 'sales') await sinkronSales(tx, d, lama.namaLengkap, master);

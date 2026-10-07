@@ -66,4 +66,4 @@ export async function verifyPassword(password: string, stored: string | null | u
   return gagal;
 }
 
-export { PASSWORD_MIN } from '@/lib/password-aturan';
+export { PASSWORD_MIN, PASSWORD_MIN_AWAL } from '@/lib/password-aturan';

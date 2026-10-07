@@ -34,6 +34,7 @@ mengandung `dev`/`test`; semua email contoh memakai `@example.com`).
 | `npm run db:migrate` | Terapkan migrasi SQL yang belum tercatat di `schema_migrations` |
 | `npm run bootstrap:admin` | Buat / pulihkan Super Admin dari env `BOOTSTRAP_ADMIN_*` |
 | `npm run seed:dev` | Data contoh untuk database dev/test |
+| `npm run config:isi -- <file.json>` | Isi tabel `app_config` (ID template Google Docs, folder output PDF, logo & signature email) dari berkas JSON lokal yang **tidak** di-commit |
 
 ## Role dan akses
 | Role | Halaman bawaan | Data penawaran yang terlihat |
@@ -57,6 +58,22 @@ Pekerjaan lambat masuk tabel `jobs`:
 - **Pemrosesan:** langsung setelah respons dikirim (`after()`), lalu disapu `GET /api/cron/jobs` dengan header `Authorization: Bearer $CRON_SECRET`.
 - **Retry:** maksimal 3 percobaan. Job baru dianggap selesai bila benar-benar berhasil.
 - **Password di payload:** password awal di email akun baru disimpan terenkripsi, dan dihapus dari payload setelah email terkirim.
+
+## Modul Penawaran
+- **Nomor dokumen:** `N/NIP-PRJ/<bulan romawi>/<tahun>/<singkatan area>`, diterbitkan di transaksi yang mengunci baris `nomor_urut` (aman untuk submit bersamaan).
+- **Harga:** dihitung ulang di server dari master produk menurut FP Tier; harga kiriman browser tidak dipercaya.
+- **Status:**
+  - Penawaran standar → `Pending Approve`; PDF dibuat lalu email approval dikirim.
+  - Non-standar (RM CCM, tier Others, catatan admin, produk/kemasan custom, harga 0) → `Pending Admin`.
+- **Edit Penawaran (Admin):**
+  - `Pending Admin` atau `Ditolak` → `Pending Approve`, lalu email approval dikirim.
+  - `Pending Approve` → PDF diperbarui tanpa email.
+  - `Approved (Revisi)` → `Approved`, lalu email konfirmasi dikirim.
+- **Edit Langsung (Admin):** status tetap; PDF dibuat ulang tanpa email.
+- **Approval:**
+  - Hanya dokumen `Pending Approve` yang bisa diputuskan. Keputusan ganda ditolak secara atomik.
+  - Nama approver diambil dari sesi.
+- **PDF:** template Google Docs disalin ke folder output, lalu diisi lewat service account. Folder output harus berada di **Shared Drive**, karena service account tidak punya kuota Drive.
 
 ## Environment variables
 Lihat [`.env.example`](.env.example). **Repo ini publik** — jangan pernah commit `.env*`,

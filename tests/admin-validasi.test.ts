@@ -19,10 +19,11 @@ describe('validasi user (port _validateManagedUserPayload/_finalizeManagedUserAc
     expect(u.organisasi).toEqual(['TU Jakarta']);
   });
 
-  it('password wajib untuk user baru, opsional saat edit, minimal 8', () => {
+  it('password awal: wajib untuk user baru, opsional saat edit, minimal 4 (pola lama)', () => {
     expect(() => rapikan({ password: '' })).toThrow('Password wajib diisi.');
     expect(rapikan({ password: '' }, false).password).toBe('');
-    expect(() => rapikan({ password: 'pendek' })).toThrow('minimal 8');
+    expect(() => rapikan({ password: 'abc' })).toThrow('minimal 4');
+    expect(rapikan({ password: 'PDS_541' }).password).toBe('PDS_541'); // pola password lama tetap boleh
   });
 
   it('super admin selalu semua halaman/area/organisasi', () => {

@@ -10,7 +10,8 @@
     "test": "vitest run",
     "db:migrate": "tsx --env-file-if-exists=.env.local scripts/run-mysql-migration.ts",
     "bootstrap:admin": "tsx --env-file-if-exists=.env.local scripts/bootstrap-admin.ts",
-    "seed:dev": "tsx --env-file-if-exists=.env.local scripts/seed-dev.ts"
+    "seed:dev": "tsx --env-file-if-exists=.env.local scripts/seed-dev.ts",
+    "config:isi": "tsx --env-file-if-exists=.env.local scripts/isi-config.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

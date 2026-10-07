@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { HALAMAN, halamanDefault, ROLE_FORM } from '@/lib/access';
 import type { BarisUser } from '@/lib/admin/users';
 import type { Role } from '@/lib/db/schema';
-import { PASSWORD_MIN } from '@/lib/password-aturan';
+import { PASSWORD_MIN_AWAL } from '@/lib/password-aturan';
 
 export const LABEL_ROLE: Record<Role, string> = {
   'super admin': 'Super Admin', admin: 'Admin', manager: 'Manager', 'manager admin': 'Manager Admin', sales: 'Sales',
@@ -97,8 +97,8 @@ export function UserFormDialog({
               <Label htmlFor="u-password">{edit ? 'Password baru (opsional)' : 'Password'}</Label>
               <div className="relative">
                 <Input id="u-password" name="password" type={lihat ? 'text' : 'password'} required={!edit}
-                  minLength={PASSWORD_MIN} autoComplete="new-password" className="h-11 pr-11"
-                  placeholder={edit ? 'Kosongkan bila tidak diganti' : `Minimal ${PASSWORD_MIN} karakter`} />
+                  minLength={PASSWORD_MIN_AWAL} autoComplete="new-password" className="h-11 pr-11"
+                  placeholder={edit ? 'Kosongkan bila tidak diganti' : `Minimal ${PASSWORD_MIN_AWAL} karakter`} />
                 <button type="button" onClick={() => setLihat((v) => !v)} aria-label={lihat ? 'Sembunyikan password' : 'Tampilkan password'}
                   className="absolute inset-y-0 right-0 grid w-11 place-items-center text-muted-foreground hover:text-foreground">
                   {lihat ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -121,7 +121,7 @@ export function UserFormDialog({
             pilihan={pilihan.organisasi.map((o) => ({ nilai: o, label: o }))} terpilih={organisasi} onChange={setOrganisasi} />
           {!edit && (
             <p className="text-xs text-muted-foreground">
-              Setelah disimpan, email berisi kredensial login otomatis dikirim ke alamat email user.
+              Setelah disimpan, email berisi kredensial login otomatis dikirim ke alamat email user. User wajib mengganti password saat login pertama.
             </p>
           )}
         </form>

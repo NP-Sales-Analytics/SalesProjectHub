@@ -1,9 +1,13 @@
-import { Segera } from '@/components/shared/segera';
+import { Dashboard } from '@/components/penawaran/dashboard';
 import { requireHalaman } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
-  await requireHalaman('/dashboard');
-  return <Segera judul="Dashboard" tahap={4} />;
+  const user = await requireHalaman('/dashboard');
+  return (
+    <div className="mx-auto w-full max-w-7xl">
+      <Dashboard admin={user.role === 'super admin' || user.role === 'admin'} />
+    </div>
+  );
 }
